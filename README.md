@@ -19,7 +19,7 @@ This particular file is the **image-free variant**: unlike a plain recent-sample
 | Post filter | Text-only posts only — image, gallery, and video posts are excluded (see Collection methodology) |
 | Encoding | UTF-8 CSV, comma-delimited, header row included |
 | Size on disk | ~62.9 MB |
-| Companion files | `scrape_amithejerk_no_images.py` (the collection script) and `scrape.log` (a full run log with running skip/valid counters) |
+| Companion files | `scraping/scrape_amithejerk_no_images.py` (the collection script) and `scraping/scrape.log` (a full run log with running skip/valid counters) |
 
 Every retained row has a non-empty post body and at least one usable (non-removed, non-deleted) top-level comment; posts failing either check were dropped during collection rather than kept as nulls.
 
@@ -41,7 +41,7 @@ Every retained row has a non-empty post body and at least one usable (non-remove
 
 ## Collection methodology
 
-Collected with `scrape_amithejerk_no_images.py` against the [Arctic Shift Reddit archive API](https://arctic-shift.photon-reddit.com) — a free, unauthenticated, Pushshift-style mirror of Reddit, so no Reddit API credentials were required. Posts were paged newest-first via `/posts/search`. A post was **skipped** (not written to the CSV) if:
+Collected with `scraping/scrape_amithejerk_no_images.py` against the [Arctic Shift Reddit archive API](https://arctic-shift.photon-reddit.com) — a free, unauthenticated, Pushshift-style mirror of Reddit, so no Reddit API credentials were required. Posts were paged newest-first via `/posts/search`. A post was **skipped** (not written to the CSV) if:
 
 - it was not a self (text) post — i.e. it was a gallery post, a video, or had `post_hint` in `{"image", "hosted:video", "rich:video", "link"}`, or carried a Reddit-generated preview payload, or
 - its body was `[removed]`, `[deleted]`, or empty, or
@@ -49,7 +49,7 @@ Collected with `scrape_amithejerk_no_images.py` against the [Arctic Shift Reddit
 
 For each retained post, top-level comments were fetched via `/comments/search`, filtered to non-removed/non-deleted, sorted by score descending, and the top 3 kept. The scraper is resumable and dedupes by Reddit post ID.
 
-Final run totals (from `scrape.log`): 32,433 raw posts seen → 5,691 skipped as image/video/gallery, 1,996 skipped as removed/deleted/empty, 1,576 skipped for having no usable comments → **23,170 valid posts written**, at which point the archive API returned no further history for the subreddit.
+Final run totals (from `scraping/scrape.log`): 32,433 raw posts seen → 5,691 skipped as image/video/gallery, 1,996 skipped as removed/deleted/empty, 1,576 skipped for having no usable comments → **23,170 valid posts written**, at which point the archive API returned no further history for the subreddit.
 
 **No usernames, author IDs, or other author-identifying fields were collected or are present in this file.**
 
