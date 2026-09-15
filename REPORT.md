@@ -34,6 +34,18 @@ usable top-level comment left for a judge to react to:
 **No usernames, author IDs, or other author-identifying fields were collected or stored.** All text
 comes from already-public posts; nothing private, quarantined or removed is included.
 
+**Text cleaning.** Post titles and bodies are stripped of emoji and pictographs (including flags,
+skin-tone modifiers and zero-width-joined sequences), of the invisible characters that survive
+copy-paste — zero-width spaces and joiners, bidi marks, byte-order marks, soft hyphens, variation
+selectors — and of the U+FFFD replacement characters left wherever an earlier encoding step lost a
+byte; non-breaking spaces become ordinary spaces. This touched 1,176 titles and bodies. Ordinary
+English punctuation is deliberately preserved: the corpus contains roughly 125,000 curly apostrophes
+along with em dashes, ellipses, accented letters and currency symbols, and removing those would turn
+"don't" into "dont". A residue remains that cleaning cannot fix: twelve posts are written in
+homoglyphs, with Latin letters swapped for Cyrillic, Armenian and Lisu lookalikes to evade filters
+(one reads `ꓮꓲꓔꓙ fоr dіѕtаոсіոց mуѕеꓲf`). Stripping those characters would leave gibberish, so the
+posts are kept as they are and are best excluded by anyone working at the character level.
+
 ## 3. Reading the community's verdict
 
 The point of the dataset is the community's judgment, so a post is only useful if its commenters

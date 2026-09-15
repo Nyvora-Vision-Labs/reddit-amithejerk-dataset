@@ -11,10 +11,14 @@ called "none" are dropped, so every story appears exactly once under one of the 
 Writes two files into data_files/: categorized_posts.csv (every post that survived the judges) and
 verdict_categorized_posts.csv (those of them whose commenters actually rendered a verdict).
 """
+import sys
 from collections import Counter
 from pathlib import Path
 
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from text_cleanup import clean_columns  # noqa: E402
 
 from categorize_posts import JUDGES
 from community_verdict import add_community_prediction
@@ -49,6 +53,7 @@ def vote(values):
 
 def main():
     source = pd.read_csv(DATA_DIR / "scraped_posts.csv")
+    clean_columns(source)  # drop emoji and invisible characters from title and content
     source["row_id"] = source.index
 
     votes = None

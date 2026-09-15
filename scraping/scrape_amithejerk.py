@@ -30,6 +30,9 @@ import praw
 import prawcore
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+from text_cleanup import clean_text  # noqa: E402
+
 ENV_PATH = ROOT / ".env"
 SUBREDDIT = "AmITheJerk"
 DEFAULT_OUT = ROOT / "data_files" / "scraped_posts.csv"
@@ -68,8 +71,9 @@ def reddit_client():
 
 
 def clean(text):
-    """Collapse internal whitespace so one post stays on one CSV row."""
-    return WHITESPACE.sub(" ", (text or "").strip())
+    """Collapse internal whitespace so one post stays on one CSV row, and drop emoji and the
+    invisible characters that survive copy-paste (see text_cleanup)."""
+    return clean_text(WHITESPACE.sub(" ", (text or "").strip()))
 
 
 def has_media(submission):
