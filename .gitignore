@@ -1,0 +1,9 @@
+# API keys — never commit
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+
+# per-judge label files written by categorize_posts.py (regenerate by rerunning it)
+categorization/post_categories_*

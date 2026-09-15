@@ -12,14 +12,14 @@ This particular file is the **image-free variant**: unlike a plain recent-sample
 
 | Property | Value |
 |---|---|
-| File | `amithejerk_no_images.csv` |
+| File | `data_files/scraped_posts.csv` |
 | Subreddit | r/AmITheJerk |
 | Rows | 23,170 |
 | Coverage | Entire scrapeable history of the subreddit (paged newest → oldest until the archive returned no further pages), not a sample |
 | Post filter | Text-only posts only — image, gallery, and video posts are excluded (see Collection methodology) |
 | Encoding | UTF-8 CSV, comma-delimited, header row included |
 | Size on disk | ~62.9 MB |
-| Companion files | `scraping/scrape_amithejerk_no_images.py` (the collection script) and `scraping/scrape.log` (a full run log with running skip/valid counters) |
+| Companion files | `scraping/scrape_amithejerk.py` (the collection script) and `scraping/scrape.log` (a full run log with running skip/valid counters) |
 
 Every retained row has a non-empty post body and at least one usable (non-removed, non-deleted) top-level comment; posts failing either check were dropped during collection rather than kept as nulls.
 
@@ -41,7 +41,7 @@ Every retained row has a non-empty post body and at least one usable (non-remove
 
 ## Collection methodology
 
-Collected with `scraping/scrape_amithejerk_no_images.py` against the [Arctic Shift Reddit archive API](https://arctic-shift.photon-reddit.com) — a free, unauthenticated, Pushshift-style mirror of Reddit, so no Reddit API credentials were required. Posts were paged newest-first via `/posts/search`. A post was **skipped** (not written to the CSV) if:
+Collected with `scraping/scrape_amithejerk.py` against the [Arctic Shift Reddit archive API](https://arctic-shift.photon-reddit.com) — a free, unauthenticated, Pushshift-style mirror of Reddit, so no Reddit API credentials were required. Posts were paged newest-first via `/posts/search`. A post was **skipped** (not written to the CSV) if:
 
 - it was not a self (text) post — i.e. it was a gallery post, a video, or had `post_hint` in `{"image", "hosted:video", "rich:video", "link"}`, or carried a Reddit-generated preview payload, or
 - its body was `[removed]`, `[deleted]`, or empty, or
@@ -55,7 +55,7 @@ Final run totals (from `scraping/scrape.log`): 32,433 raw posts seen → 5,691 s
 
 ## Relationship to the wider corpus
 
-This project also includes `data_collection/amithejerk.csv` — a separate, 20,000-row *recent-most sample* of the same subreddit that does **not** filter out image/video/gallery posts. Use that file if you want a same-schema, same-size sample directly comparable to the other 10 subreddits in the wider "judge me" corpus (r/AmItheAsshole, r/AITAH, r/AmIWrong, r/relationship_advice, etc.). Use *this* file (`amithejerk_no_images.csv`) if you specifically need r/AmITheJerk's full history, or need text-only posts because your pipeline can't make use of image content.
+This project also includes `data_collection/amithejerk.csv` — a separate, 20,000-row *recent-most sample* of the same subreddit that does **not** filter out image/video/gallery posts. Use that file if you want a same-schema, same-size sample directly comparable to the other 10 subreddits in the wider "judge me" corpus (r/AmItheAsshole, r/AITAH, r/AmIWrong, r/relationship_advice, etc.). Use *this* file (`data_files/scraped_posts.csv`) if you specifically need r/AmITheJerk's full history, or need text-only posts because your pipeline can't make use of image content.
 
 ## Known limitations / caveats
 
