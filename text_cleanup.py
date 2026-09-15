@@ -1,6 +1,9 @@
 """Strip emoji and invisible junk out of post text.
 
 What goes:
+  - HTML entities, unescaped first so the character they name can then be handled on its own terms.
+    Reddit text arrives double-escaped, so a single unescape pass leaves entities like "&#x200B;"
+    sitting in the text as literal characters; unescaping repeats until the string stops changing;
   - emoji and pictographs, including multi-codepoint sequences (flags, skin tones, ZWJ families),
     replaced by a space so the words either side do not fuse together;
   - zero-width spaces and joiners, bidi marks, byte-order marks, soft hyphens and variation
@@ -12,6 +15,8 @@ What stays: curly quotes, em and en dashes, ellipses, accented letters and curre
 are ordinary English punctuation -- the corpus has 128,000 curly apostrophes, and deleting them would
 turn "don't" into "dont".
 """
+import html
+
 import regex
 
 # an emoji, optionally with a variation selector, skin-tone modifier, or further ZWJ-joined emoji
@@ -24,11 +29,21 @@ WHITESPACE = regex.compile(r"\s+")
 TEXT_COLUMNS = ["title", "content"]
 
 
+def unescape_fully(text, limit=3):
+    """html.unescape until the text stops changing, for the double-escaped entities Reddit stores."""
+    for _ in range(limit):
+        once = html.unescape(text)
+        if once == text:
+            break
+        text = once
+    return text
+
+
 def clean_text(text):
     """Emoji- and junk-free version of one string; anything that is not a string is passed through."""
     if not isinstance(text, str):
         return text
-    cleaned = EMOJI.sub(" ", text)
+    cleaned = EMOJI.sub(" ", unescape_fully(text))
     cleaned = cleaned.replace(" ", " ")
     cleaned = INVISIBLE.sub("", cleaned)
     return WHITESPACE.sub(" ", cleaned).strip()

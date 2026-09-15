@@ -34,11 +34,14 @@ usable top-level comment left for a judge to react to:
 **No usernames, author IDs, or other author-identifying fields were collected or stored.** All text
 comes from already-public posts; nothing private, quarantined or removed is included.
 
-**Text cleaning.** Post titles and bodies are stripped of emoji and pictographs (including flags,
-skin-tone modifiers and zero-width-joined sequences), of the invisible characters that survive
-copy-paste — zero-width spaces and joiners, bidi marks, byte-order marks, soft hyphens, variation
-selectors — and of the U+FFFD replacement characters left wherever an earlier encoding step lost a
-byte; non-breaking spaces become ordinary spaces. This touched 1,176 titles and bodies. Ordinary
+**Text cleaning.** Post text is unescaped and stripped of everything that is not language. Reddit
+stores its text double-escaped, so HTML entities such as `&#x200B;` survive a single unescape pass
+and sit in the body as literal characters; unescaping is therefore repeated until the text stops
+changing. Emoji and pictographs are then removed (including flags, skin-tone modifiers and
+zero-width-joined sequences), along with the invisible characters that survive copy-paste — zero-width
+spaces and joiners, bidi marks, byte-order marks, soft hyphens, variation selectors — and the U+FFFD
+replacement characters left wherever an earlier encoding step lost a byte; non-breaking spaces become
+ordinary spaces. This touched 1,471 titles and bodies, and the comments are cleaned the same way. Ordinary
 English punctuation is deliberately preserved: the corpus contains roughly 125,000 curly apostrophes
 along with em dashes, ellipses, accented letters and currency symbols, and removing those would turn
 "don't" into "dont". A residue remains that cleaning cannot fix: twelve posts are written in
@@ -61,7 +64,7 @@ ordinary speech ("nah bro u gotta go"), so only the capitalized **NAH** tag coun
 like "nah, you're not the jerk" still registers through the spelled-out patterns. `INFO:` comments
 are requests for detail, not verdicts, and are ignored.
 
-**12,197 of the 23,170 posts (52.6%) carry an explicit verdict**; the other 10,973 were dropped. The
+**12,199 of the 23,170 posts (52.6%) carry an explicit verdict**; the other 10,971 were dropped. The
 posts lost here are not junk — comments like *"You're not a charity, and her acting shocked is peak
 audacity"* plainly imply a verdict — but they never state one, and inferring it would mean guessing
 rather than recording what the community said.
@@ -69,7 +72,7 @@ rather than recording what the community said.
 | verdict | posts | share |
 |---|---|---|
 | NTJ — not the jerk | 9,909 | 81.2% |
-| YTJ — you're the jerk | 2,179 | 17.9% |
+| YTJ — you're the jerk | 2,181 | 17.9% |
 | ESH — everyone sucks here | 89 | 0.7% |
 | NAH — no assholes here | 20 | 0.2% |
 
@@ -108,21 +111,21 @@ recorded as its second choice.
 |---|---|---|
 | retrieved from the subreddit | 32,433 | — |
 | after dropping media, empty and comment-less posts | 23,170 | −9,263 |
-| after dropping posts with no verdict in the comments | 12,197 | −10,973 |
-| after the three-judge category consensus and dedup | **11,474** | −723 |
+| after dropping posts with no verdict in the comments | 12,199 | −10,971 |
+| after the three-judge category consensus and dedup | **11,476** | −723 |
 
-The result is **`data_files/verdict_categorized_posts.csv` — 11,474 posts**, each carrying both what the community
+The result is **`data_files/verdict_categorized_posts.csv` — 11,476 posts**, each carrying both what the community
 decided and what the conflict was about:
 
 | category | posts | | category | posts |
 |---|---|---|---|---|
 | family | 2,420 | | school | 1,056 |
-| friendships | 1,799 | | work | 726 |
+| friendships | 1,799 | | work | 727 |
 | romantic_relationships | 1,667 | | housing_neighbors | 703 |
-| money_possessions | 1,145 | | strangers_public | 688 |
+| money_possessions | 1,146 | | strangers_public | 688 |
 | events_celebrations | 1,071 | | parenting_children | 199 |
 
-9,837 of the labels are high confidence and 4,496 posts carry a secondary category.
+9,839 of the labels are high confidence and 4,497 posts carry a secondary category.
 
 ## 5. Columns stored
 
@@ -147,10 +150,10 @@ badly as a continuous variable. `upvote_ordinal` bins them into six log-scaled, 
 | band | posts | share | | band | posts | share |
 |---|---|---|---|---|---|---|
 | `0` | 1,501 | 13.1% | | `20-99` | 2,392 | 20.8% |
-| `1-4` | 3,264 | 28.4% | | `100-999` | 1,385 | 12.1% |
+| `1-4` | 3,266 | 28.5% | | `100-999` | 1,385 | 12.1% |
 | `5-19` | 2,695 | 23.5% | | `1000+` | 237 | 2.1% |
 
-Attention is not spread evenly across conflict types (χ²(45) = 1,257, p < 0.001, Cramér's V = 0.148):
+Attention is not spread evenly across conflict types (χ²(45) = 1,255, p < 0.001, Cramér's V = 0.148):
 median score runs from 24 for `work` and 20 for `money_possessions` down to 3 for `school` and 4 for
 `strangers_public`. Nor is vindication — the NTJ rate ranges from **88% for `work`** disputes down to
 **67% for `parenting_children`** and 72% for `romantic_relationships`, so how likely a poster is to be
